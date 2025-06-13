@@ -1,4 +1,5 @@
 import os
+import hashlib
 
 class Walker:
     def __init__(self, base):
@@ -16,9 +17,11 @@ wlk = Walker('.')
 X = 0
 
 @wlk.file_wrapper
-def test(x):
-    print(x)
+def hash_file(f):
+    data = 0
+    with open(f, 'rb') as file:
+        data = file.read()
+    print(hashlib.md5(data).hexdigest())
 
 
-test()
-
+hash_file()
