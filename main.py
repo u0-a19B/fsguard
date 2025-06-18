@@ -2,6 +2,7 @@ import os
 import hashlib
 import sys
 import json
+import time
 
 file_hashed: dict[str,str] = {}
 dir_hashed: dict[str,str] = {}
@@ -63,10 +64,30 @@ def hash_init():
         wlk.file_wrapper()
         dir_hashed[d] = hashlib.md5(wlk.hash_buffer.encode()).hexdigest()
 
+
+def file_check(f_hashed) -> None:
+    for k, v in f_hashed.items():
+        new_hash = Walker.hash_file(k)
+        # print(f"Check status : old {v}, new {new_hash}")
+        if new_hash != v:
+            print(f"file changed :{k}")
+
+def dir_check(d_hashed) -> None:
+    for k, v in d_hashed.items():
+        wlk = Walker(k)
+        wlk.file_wrapper()
+        new_hash = hashlib.md5(wlk.hash_buffer.encode()).hexdigest()
+        # print(f"Check status : old {v}, new {new_hash}")
+        if new_hash != v:
+            print(f"Dir changed :{k}")
+        print(f"Dir status old {v}, new {new_hash}")
 # print(Walker.hash_file('main.py'))
 # hash_dir()
 # print(Walker.hash_string(hash_buffer.encode()))
 # print(Parser(sys.argv[1]))
 hash_init()
-print(file_hashed)
-print(dir_hashed)
+
+while 1:
+    file_check(file_hashed)
+    dir_check(dir_hashed)
+    time.sleep(3)
